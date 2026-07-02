@@ -28,7 +28,7 @@ FILTER_NETWORKS = [
 ]
 
 MIN_PREFIX_LENGTH = 8
-MAX_PREFIX_LENGTH = 32
+MAX_PREFIX_LENGTH = 30
 
 def is_bad_prefix(prefix):
     try:
@@ -45,9 +45,6 @@ def is_bad_prefix(prefix):
             if net.overlaps(bad_net):
                 return True
                 
-        if net.prefixlen == 31 and net.num_addresses == 2:
-            return True
-            
         return False
         
     except Exception:
@@ -96,7 +93,7 @@ def main():
         ASNS = json.load(f)["asns"]
     
     print(f"Starting scan for {len(ASNS)} ASNs...")
-    print(f"Filtering out bad ranges (reserved, private, multicast, etc.)")
+    print(f"Filtering out bad ranges (reserved, private, multicast, /32, etc.)")
     
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         future_to_asn = {executor.submit(fetch_prefixes, asn): asn for asn in ASNS}
